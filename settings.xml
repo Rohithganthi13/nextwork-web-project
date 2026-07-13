@@ -1,4 +1,4 @@
-<setting>
+<settings>
 <servers>
   <server>
     <id>nextwork-nextwork-devops-cicd</id>
@@ -28,4 +28,4 @@
     <mirrorOf>*</mirrorOf>
   </mirror>
 </mirrors>
-</setting>
+</settings>
