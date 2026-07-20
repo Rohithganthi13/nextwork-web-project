@@ -3,20 +3,23 @@ version: 0.2
 env:
   variables:
     AWS_REGION: ap-south-1
-    IMAGE_REPO_NAME:
-    ACCOUNT_ID:
+    IMAGE_REPO_NAME: nextwork-web-project
+    ACCOUNT_ID: 047719635525
 
 phases:
   pre_build:
     commands:
       - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - echo Logging in to Amazon ECR.....
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
   build:
     commands:
-      - docket build -t $IMAGE_REPO_NAME
+      - echo Building Docker Image ....
+      - docker build -t $IMAGE_REPO_NAME .
 
   post_build:
     commands:
+      - echo Pushing Docker Image ....
       - docker tag $IMAGE_REPO_NAME:latest $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest     
