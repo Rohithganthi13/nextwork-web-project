@@ -1,36 +1,22 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_REGION: ap-south-1
+    IMAGE_REPO_NAME:
+    ACCOUNT_ID:
+
 phases:
-  install:
-    runtime-versions:
-      java: corretto8
   pre_build:
     commands:
-      - echo Logging in to AWS CodeArtifact...
-      - export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain "web-app" --domain-owner "047719635525" --region "ap-south-1" --query authorizationToken --output text`
-      - export CODEARTIFACT_AUTH_TOKEN
+      - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
   build:
     commands:
-      - echo "====== BEGINNING TEST PHASE ======"
-      - echo "Running tests on `date`"
-      - chmod +x run-tests.sh
-      - ./run-tests.sh
-      - echo "====== TEST PHASE COMPLETE ======"
-      - echo "====== BEGINNING BUILD PHASE ======"
-      - echo "Build started on `date`"
-      - mvn -s settings.xml compile
-      - echo "====== BUILD PHASE COMPLETE ======"
-  
+      - docket build -t $IMAGE_REPO_NAME
+
   post_build:
     commands:
-      - echo "Build completed on `date`"
-      - mvn -s settings.xml package
-
-artifacts:
-  files:
-    - target/nextwork-web-project.war
-    - appspec.yml
-    - scripts/**/*
-  discard-paths: no
-
-
+      - docker tag $IMAGE_REPO_NAME:latest $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:latest     
