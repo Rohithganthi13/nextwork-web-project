@@ -1,63 +1,101 @@
 # Java Web App Deployment with AWS CI/CD
 
-Welcome to this project combining Java web app development and AWS CI/CD tools!
+Welcome to this project showcasing a Java web application deployed through a fully automated AWS CI/CD pipeline.
 
 <br>
 
 ## Table of Contents
-- [Introduction](#introduction)
-- [Technologies](#technologies)
-- [Setup](#setup)
-- [Contact](#contact)
-- [Conclusion](#conclusion)
+
+* [Introduction](#introduction)
+* [Technologies](#technologies)
+* [Setup](#setup)
+* [Architecture](#architecture)
+* [Contact](#contact)
+* [Conclusion](#conclusion)
 
 <br>
 
 ## Introduction
-This project is used for an introduction to creating and deploying a Java-based web app using AWS, especially their CI/CD tools.
 
-The deployment pipeline I'm building around the Java web app in this repository is invisible to the end-user, but makes a big impact by automating the software release processes.
+This project demonstrates how a Java-based web application can be built, packaged, and deployed automatically using AWS DevOps services.
+
+Rather than manually compiling code and deploying updates, the entire software delivery process is automated through a CI/CD pipeline. Every code change pushed to GitHub triggers an automated workflow that retrieves dependencies, builds the application, creates a Docker image, stores artifacts, and deploys the latest version to an Amazon EC2 instance.
+
+This wasn't just about getting the pipeline to work—it was about understanding why each AWS service exists and how they collaborate to automate software delivery.
 
 <br>
 
 ## Technologies
-Here’s what I’m using for this project:
 
-- **Amazon EC2**: I'm developing my web app on Amazon EC2 virtual servers, so that software development and deployment happens entirely on the cloud.
-- **VS Code**: For my IDE, I chose Visual Studio Code. It connects directly to my development EC2 instance, making it easy to edit code and manage files in the cloud.
-- **GitHub**: All my web app code is stored and versioned in this GitHub repository.
-- **[COMING SOON] AWS CodeArtifact**: Once it's rolled out, CodeArtifact will store my artifacts and dependencies, which is great for high availability and speeding up my project's build process.
-- **[COMING SOON] AWS CodeBuild**: Once it's rolled out, CodeBuild will take over my build process. It'll compile the source code, run tests, and produce ready-to-deploy software packages automatically.
-- **[COMING SOON] AWS CodeDeploy**: Once it's rolled out, CodeDeploy will automate my deployment process across EC2 instances.
-- **[COMING SOON] AWS CodePipeline**: Once it's rolled out, CodePipeline will automate the entire process from GitHub to CodeDeploy, integrating build, test, and deployment steps into one efficient workflow.
+This project uses the following technologies:
 
+* **Java** – Backend application.
+* **Apache Maven** – Dependency management and application build tool.
+* **Amazon Linux 2023** – Development and deployment operating system.
+* **Docker** – Packages the application into a portable container image.
+* **Amazon EC2** – Hosts the application and deployment environment.
+* **Git & GitHub** – Source code management and version control.
+* **AWS CodeArtifact** – Secure Maven repository for storing and retrieving project dependencies.
+* **AWS CodeBuild** – Automatically builds the application, downloads dependencies, and creates deployment artifacts.
+* **AWS CodeDeploy** – Deploys the latest application version to EC2 instances.
+* **AWS CodePipeline** – Orchestrates the complete CI/CD workflow from source to production.
+* **AWS IAM** – Manages permissions for AWS services involved in the pipeline.
+* **Visual Studio Code** – Primary development environment connected to the EC2 instance.
 
 <br>
 
 ## Setup
-To get this project up and running on your local machine, follow these steps:
+
+To run this project locally:
 
 1. Clone the repository:
-    ```bash
-    git clone https://github.com/yourusername/nextwork-web-project.git
-    ```
-2. Navigate to the project directory:
-    ```bash
-    cd nextwork-web-project
-    ```
-3. Install dependencies:
-    ```bash
-    mvn install
-    ```
+
+   ```bash
+   git clone https://github.com/Rohithganthi13/nextwork-web-project.git
+   ```
+
+2. Navigate into the project:
+
+   ```bash
+   cd nextwork-web-project
+   ```
+
+3. Build the application:
+
+   ```bash
+   mvn clean package
+   ```
+
+4. Run the generated application using your preferred Java server or deploy it through the AWS CI/CD pipeline.
+
+<br>
+
+## Architecture
+
+The deployment workflow follows these steps:
+
+1. Developer pushes code to GitHub.
+2. AWS CodePipeline detects the new commit.
+3. AWS CodeBuild retrieves dependencies from CodeArtifact and builds the application using Maven.
+4. Build artifacts are prepared for deployment.
+5. AWS CodeDeploy deploys the latest application to the target Amazon EC2 instance.
+6. The updated application becomes available without manual deployment steps.
+
+This pipeline provides a repeatable, reliable, and automated software delivery process while reducing manual effort and deployment errors.
 
 <br>
 
 ## Contact
-If you have any questions or comments about the NextWork Web Project, please contact:
-Rohithganthi13 - (mailto:rohithganthi@gmail.com)
+
+If you have any questions or feedback, feel free to reach out:
+
+* **GitHub:** https://github.com/Rohithganthi13
+* **Email:** [rohithganthi@gmail.com](mailto:rohithganthi@gmail.com)
 
 <br>
 
 ## Conclusion
-Thank you for exploring this project! I'll continue to build this pipeline and apply my learnings to future projects.
 
+This project represents my hands-on journey into AWS DevOps and CI/CD automation. Building this pipeline helped me understand how source control, dependency management, automated builds, artifact repositories, deployment services, and infrastructure work together to deliver software efficiently.
+
+I plan to continue enhancing this project by integrating additional AWS services, improving deployment strategies, and expanding the pipeline with more production-ready DevOps practices.
