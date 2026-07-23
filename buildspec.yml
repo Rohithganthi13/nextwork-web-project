@@ -14,3 +14,8 @@ phases:
       - echo "Tagging and pushing the docker image to ecr...."
       - docker tag $IMAGE_REPO_NAME:latest $REPOSITORY_URI:latest
       - docker push $REPOSITORY_URI:latest
+
+artifacts:
+  files:
+    - appspec.yml
+    - scripts/**/*

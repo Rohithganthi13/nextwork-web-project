@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ec2-user/web-app
+hooks:
+  ApplicationStop:
+    - location: scripts/stop_container.sh
+      timeout: 60
+  AfterInstall:
+    - location: scripts/start_container.sh
+      timeout: 180
