@@ -1,17 +1,10 @@
 version: 0.2
-
-env:
-  variables:
-    AWS_REGION: ap-south-1
-    IMAGE_REPO_NAME: web-app
-    ACCOUNT_ID: 047719635525
-
 phases:
   pre_build:
     commands:
       - REPOSITORY_URI=$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE_REPO_NAME
       - echo "Logging in to AWS ECR......"
-      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com
   build:
     commands:
       - echo "Building the Docker Image....."
