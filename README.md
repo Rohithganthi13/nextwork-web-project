@@ -1,27 +1,27 @@
-# Java Web App Deployment with AWS CI/CD
+# Java Web App Deployment with AWS Docker CI/CD
 
-Welcome to this project showcasing a Java web application deployed through a fully automated AWS CI/CD pipeline.
-
-<br>
-
-## Table of Contents
-
-* [Introduction](#introduction)
-* [Technologies](#technologies)
-* [Setup](#setup)
-* [Architecture](#architecture)
-* [Contact](#contact)
-* [Conclusion](#conclusion)
+Welcome to this project showcasing a Java web application deployed through a fully automated AWS CI/CD pipeline using Docker and Amazon ECR.
 
 <br>
+Table of Contents
+Introduction
+Technologies
+Setup
+Architecture
+Project Structure
+Deployment Workflow
+Contact
+Conclusion
+<br>
+Introduction
 
-## Introduction
+This project demonstrates how a Java web application can be containerized with Docker and deployed automatically using AWS DevOps services.
 
-This project demonstrates how a Java-based web application can be built, packaged, and deployed automatically using AWS DevOps services.
+Instead of manually building and deploying the application, every code change pushed to GitHub automatically triggers a CI/CD pipeline. The pipeline builds a Docker image, pushes it to Amazon Elastic Container Registry (ECR), and deploys the latest version to an Amazon EC2 instance using AWS CodeDeploy.
 
-Rather than manually compiling code and deploying updates, the entire software delivery process is automated through a CI/CD pipeline. Every code change pushed to GitHub triggers an automated workflow that retrieves dependencies, builds the application, creates a Docker image, stores artifacts, and deploys the latest version to an Amazon EC2 instance.
+The deployment process is fully automated through deployment scripts executed by CodeDeploy lifecycle hooks, ensuring that the latest container replaces the previous version with minimal manual intervention.
 
-This wasn't just about getting the pipeline to work—it was about understanding why each AWS service exists and how they collaborate to automate software delivery.
+This project helped me understand not only how to automate deployments but also the responsibility of each AWS service within a modern CI/CD pipeline.
 
 <br>
 
@@ -29,59 +29,104 @@ This wasn't just about getting the pipeline to work—it was about understanding
 
 This project uses the following technologies:
 
-* **Java** – Backend application.
-* **Apache Maven** – Dependency management and application build tool.
-* **Amazon Linux 2023** – Development and deployment operating system.
-* **Docker** – Packages the application into a portable container image.
-* **Amazon EC2** – Hosts the application and deployment environment.
-* **Git & GitHub** – Source code management and version control.
-* **AWS CodeArtifact** – Secure Maven repository for storing and retrieving project dependencies.
-* **AWS CodeBuild** – Automatically builds the application, downloads dependencies, and creates deployment artifacts.
-* **AWS CodeDeploy** – Deploys the latest application version to EC2 instances.
-* **AWS CodePipeline** – Orchestrates the complete CI/CD workflow from source to production.
-* **AWS IAM** – Manages permissions for AWS services involved in the pipeline.
-* **Visual Studio Code** – Primary development environment connected to the EC2 instance.
-
+Java – Backend application.
+Apache Maven – Compiles and packages the Java application.
+Docker – Packages the application into a portable container image.
+Amazon Elastic Container Registry (ECR) – Stores Docker images.
+Amazon EC2 – Hosts and runs the Docker container.
+AWS CodeBuild – Builds the Docker image and pushes it to Amazon ECR.
+AWS CodeDeploy – Automates deployment of the latest Docker image to EC2.
+AWS CodePipeline – Orchestrates the end-to-end CI/CD workflow.
+AWS IAM – Provides secure permissions for AWS services.
+Git & GitHub – Source code management and pipeline trigger.
+Amazon Linux 2023 – Operating system for the deployment server.
+Visual Studio Code – Development environment.
 <br>
 
 ## Setup
 
-To run this project locally:
+Clone the repository:
 
-1. Clone the repository:
+git clone https://github.com/Rohithganthi13/nextwork-web-project.git
 
-   ```bash
-   git clone https://github.com/Rohithganthi13/nextwork-web-project.git
-   ```
+Navigate into the project:
 
-2. Navigate into the project:
+cd nextwork-web-project
 
-   ```bash
-   cd nextwork-web-project
-   ```
+Build the Docker image locally:
 
-3. Build the application:
+docker build -t web-app .
 
-   ```bash
-   mvn clean package
-   ```
+Run the container:
 
-4. Run the generated application using your preferred Java server or deploy it through the AWS CI/CD pipeline.
+docker run -d -p 8080:8080 web-app
+
+The application can also be deployed automatically through the AWS CI/CD pipeline by pushing changes to GitHub.
 
 <br>
 
 ## Architecture
 
-The deployment workflow follows these steps:
+The deployment workflow is illustrated below:
 
-1. Developer pushes code to GitHub.
-2. AWS CodePipeline detects the new commit.
-3. AWS CodeBuild retrieves dependencies from CodeArtifact and builds the application using Maven.
-4. Build artifacts are prepared for deployment.
-5. AWS CodeDeploy deploys the latest application to the target Amazon EC2 instance.
-6. The updated application becomes available without manual deployment steps.
+Developer
+    │
+    ▼
+GitHub
+    │
+    ▼
+AWS CodePipeline
+    │
+    ▼
+AWS CodeBuild
+    │
+    ├── Build Docker Image
+    ├── Tag Docker Image
+    └── Push Image to Amazon ECR
+    │
+    ▼
+AWS CodeDeploy
+    │
+    ▼
+Amazon EC2
+    │
+    ├── Stop Existing Container
+    ├── Authenticate with Amazon ECR
+    ├── Pull Latest Docker Image
+    └── Run New Container
 
-This pipeline provides a repeatable, reliable, and automated software delivery process while reducing manual effort and deployment errors.
+This architecture separates continuous integration from continuous deployment while ensuring that every deployment uses a versioned Docker image stored in Amazon ECR.
+
+<br>
+
+## Project Structure
+.
+├── src/
+├── Dockerfile
+├── pom.xml
+├── buildspec.yml
+├── appspec.yml
+├── scripts/
+│   ├── stop_container.sh
+│   └── start_container.sh
+└── README.md
+<br>
+
+## Deployment Workflow
+
+A developer pushes code to GitHub.
+AWS CodePipeline detects the commit.
+AWS CodeBuild builds a Docker image from the application source.
+CodeBuild tags the image and pushes it to Amazon ECR.
+CodeDeploy transfers the deployment bundle (appspec.yml and deployment scripts) to the EC2 instance.
+The ApplicationStop hook stops and removes the currently running container.
+The AfterInstall hook:
+Authenticates Docker with Amazon ECR.
+Pulls the latest Docker image.
+Starts a new container from the updated image.
+The latest version of the application is now available on the EC2 instance.
+
+This deployment process eliminates manual deployment steps while ensuring consistent and repeatable releases.
 
 <br>
 
@@ -89,13 +134,14 @@ This pipeline provides a repeatable, reliable, and automated software delivery p
 
 If you have any questions or feedback, feel free to reach out:
 
-* **GitHub:** https://github.com/Rohithganthi13
-* **Email:** [rohithganthi@gmail.com](mailto:rohithganthi@gmail.com)
-
+GitHub: https://github.com/Rohithganthi13
+Email: rohithganthi@gmail.com
 <br>
 
 ## Conclusion
 
-This project represents my hands-on journey into AWS DevOps and CI/CD automation. Building this pipeline helped me understand how source control, dependency management, automated builds, artifact repositories, deployment services, and infrastructure work together to deliver software efficiently.
+This project represents my hands-on journey into AWS DevOps and modern container-based CI/CD.
 
-I plan to continue enhancing this project by integrating additional AWS services, improving deployment strategies, and expanding the pipeline with more production-ready DevOps practices.
+Through this project, I learned how Docker, Amazon ECR, CodeBuild, CodeDeploy, and CodePipeline work together to automate application delivery. More importantly, I gained an understanding of the role each service plays in the deployment lifecycle—from building container images to orchestrating deployments on Amazon EC2.
+
+Going forward, I plan to extend this architecture by deploying containers to Amazon ECS with AWS Fargate, exploring Infrastructure as Code with Terraform and CloudFormation, and implementing production-ready monitoring and logging practices.
